@@ -12,7 +12,9 @@ include_directories(${CMAKE_SOURCE_DIR})
 # Define the source files
 set(SOURCES
         main.cpp
-        )
+        Menu.h
+        Menu.cpp
+)
 
 # Define the executable target
 add_executable(1stDA_Project ${SOURCES})
