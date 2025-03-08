@@ -6,7 +6,7 @@
 #include <iostream>
 
 template <class T>
-void Menu<T>::fastestIndependantRoute(Graph<T> *g) {
+void Menu<T>::fastestIndependantRoute() {
     // change findVertex to work with strings
     string source, target;
     Vertex<T>* sourceVertex, targetVertex;
@@ -32,11 +32,11 @@ void Menu<T>::fastestIndependantRoute(Graph<T> *g) {
         }
     }
 
-    printFastestIndependantRoute(g, sourceVertex, targetVertex);
+    printFastestIndependantRoute(sourceVertex, targetVertex);
 }
 
 template <class T>
-void Menu<T>::fastestRestrictedRoute(Graph<T> *g) {
+void Menu<T>::fastestRestrictedRoute() {
     // change findVertex to work with strings
     std::vector<Vertex<T>*> nodesToAvoid = {}, segmentsToAvoid = {};
     string source, target, includeNode;
@@ -121,14 +121,14 @@ void Menu<T>::fastestRestrictedRoute(Graph<T> *g) {
 }
 
 template <class T>
-void Menu<T>::printFastestIndependantRoute(Graph<T> *g, Vertex<T>* source, Vertex<T>* target) {
+void Menu<T>::printFastestIndependantRoute(Vertex<T>* source, Vertex<T>* target) {
     // Implement the logic to find and print the fastest independent route
     // This is a placeholder implementation
     std::cout << "Fastest Independent Route from " << source << " to " << target << std::endl;
 }
 
 template <class T>
-void Menu<T>::printFastestRestrictedRoute(Graph<T> *g, Vertex<T>* source, Vertex<T>* target, std::vector<Vertex<T>*> nodesToAvoid,
+void Menu<T>::printFastestRestrictedRoute(Vertex<T>* source, Vertex<T>* target, std::vector<Vertex<T>*> nodesToAvoid,
     std::vector<Edge<T>*> segmentsToAvoid, Vertex<T>* includeNode) {
     // Implement the logic to find and print the fastest restricted route
     // This is a placeholder implementation
@@ -152,11 +152,11 @@ void Menu<T>::printInitialMenu() {
 
         switch (option) {
             case 1:
-                this->fastestIndependantRoute(this->getGraph());
+                this->fastestIndependantRoute(g);
                 exit = true;
             break;
             case 2:
-                this->fastestRestrictedRoute(this->getGraph());
+                this->fastestRestrictedRoute(g);
                 exit = true;
             break;
             case 3:

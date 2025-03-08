@@ -13,13 +13,13 @@ public:
 
     void printInitialMenu();
 
-    void fastestIndependantRoute(Graph<T> *g);
+    void fastestIndependantRoute();
 
-    void fastestRestrictedRoute(Graph<T> *g);
+    void fastestRestrictedRoute();
 
-    void printFastestIndependantRoute(Graph<T> *g, Vertex<T>* source, Vertex<T>* target);
+    void printFastestIndependantRoute(Vertex<T>* source, Vertex<T>* target);
 
-    void printFastestRestrictedRoute(Graph<T> *g, Vertex<T>* source, Vertex<T>* target, std::vector<Vertex<T>*> nodesToAvoid,
+    void printFastestRestrictedRoute(Vertex<T>* source, Vertex<T>* target, std::vector<Vertex<T>*> nodesToAvoid,
         std::vector<Edge<T>*> segmentsToAvoid, Vertex<T>* includeNode);
 
     Graph<T>* getGraph() const {
