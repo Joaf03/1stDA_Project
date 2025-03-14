@@ -14,6 +14,8 @@ set(SOURCES
         main.cpp
         Menu.h
         Menu.cpp
+        dijkstra.cpp
+        dijkstra.h
 )
 
 # Define the executable target

@@ -3,11 +3,11 @@
 //
 
 #include "Menu.h"
+#include "dijkstra.h"
 #include <iostream>
 
 template <class T>
 void Menu<T>::fastestIndependantRoute() {
-    // change findVertex to work with strings
     string source, target;
     Vertex<T>* sourceVertex, targetVertex;
     bool validSource = false, validTarget = false;
@@ -122,9 +122,32 @@ void Menu<T>::fastestRestrictedRoute() {
 
 template <class T>
 void Menu<T>::printFastestIndependantRoute(Vertex<T>* source, Vertex<T>* target) {
-    // Implement the logic to find and print the fastest independent route
-    // This is a placeholder implementation
+
+    std::vector<Vertex<T>*> avoidNodes = {};
+
+    dijkstra(g, source->getLocation(), {}, {});
+
+    std::vector<string> path = getPath(g, source->getLocation(), target->getLocation());
+
+    for (int i = 1; i < path.size() - 1; i++) {
+        avoidNodes.push_back(g->findVertex(path[i]));
+    }
+
     std::cout << "Fastest Independent Route from " << source << " to " << target << std::endl;
+
+    for (const string& location : path) {
+        std::cout << location << "->";
+    }
+
+    dijkstra(g, source->getLocation(), avoidNodes, {});
+
+    std::vector<string> path2 = getPath(g, source->getLocation(), target->getLocation());
+
+    std::cout << "Fastest Alternative Independent Route from " << source << " to " << target << std::endl;
+
+    for (const string& location : path2) {
+        std::cout << location << "->";
+    }
 }
 
 template <class T>
