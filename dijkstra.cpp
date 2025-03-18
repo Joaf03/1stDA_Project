@@ -1,3 +1,4 @@
+/*
 //
 // Created by curlmike on 14-03-2025.
 //
@@ -22,7 +23,7 @@ bool relaxEdge(Edge<T> *edge) { // d[u] + w(u,v) < d[v]
 }
 
 template <class T>
-void dijkstra(Graph<T> * g, const string &origin, std::vector<Vertex<T>*> nodesToAvoid, std::vector<Edge<T>*> segmentsToAvoid) {
+void dijkstra(OldGraph<T> * g, const string &origin, std::vector<Vertex<T>*> nodesToAvoid, std::vector<Edge<T>*> segmentsToAvoid) {
     auto compare = [](Vertex<T>* left, Vertex<T>* right) { return left->getDist() > right->getDist(); };
     std::priority_queue<Vertex<T>*, std::vector<Vertex<T>*>, decltype(compare)> q(compare);
 
@@ -54,7 +55,7 @@ void dijkstra(Graph<T> * g, const string &origin, std::vector<Vertex<T>*> nodesT
 }
 
 template <class T>
-static std::vector<T> getPath(Graph<T> * g, const string &origin, const string &dest) {
+static std::vector<T> getPath(OldGraph<T> * g, const string &origin, const string &dest) {
     std::vector<T> res;
 
     Vertex<T>* dest_vertex = g->findVertex(dest);
@@ -72,3 +73,4 @@ static std::vector<T> getPath(Graph<T> * g, const string &origin, const string &
 
     return res;
 }
+*/

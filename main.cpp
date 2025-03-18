@@ -1,22 +1,22 @@
-#include "Graph.h"
+#include "./data_structures/Graph.h"
+#include "Parser.h"
 #include <iostream>
 
-using namespace std;
 
 int main() {
     // Create a Graph object
     Graph<int> graph;
 
     // Parse the Locations.csv file
-    graph.parseLocations("For%20Students/Locations.csv");
+    Parser::parseLocations("../data/Locations.csv", graph);
 
     // Parse the Distances.csv file
-    graph.parseDistances("For%20Students/Distances.csv");
+    Parser::parseDistances("../data/Distances.csv", graph);
 
     // Display the parsed vertices
     cout << "Vertices:" << endl;
-    for (const auto& vertex : graph.getVertices()) {
-        cout << "ID: " << vertex->getID()
+    for (const auto& vertex : graph.getVertexSet()) {
+        cout << "ID: " << vertex->getInfo()
              << ", Code: " << vertex->getCode()
              << ", Location: " << vertex->getLocation()
              << ", Parking: " << (vertex->getParking() ? "Yes" : "No")

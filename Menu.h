@@ -4,7 +4,8 @@
 
 #ifndef MENU_H
 #define MENU_H
-#include <Graph.h>
+#include <data_structures/Graph.h>
+
 
 template <class T>
 class Menu {
