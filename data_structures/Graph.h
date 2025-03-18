@@ -133,6 +133,8 @@ public:
     Vertex<T> *findVertex(const T &in) const;
 
     Vertex<T> *findVertex(std::string location) const;
+
+    Edge<T> *findEdge(std::string orig, std::string dest) const;
     /*
      *  Adds a vertex with a given content or info (in) to a graph (this).
      *  Returns true if successful, and false if a vertex with that content already exists.
@@ -442,6 +444,21 @@ Vertex<T> *Graph<T>::findVertex(std::string location) const {
             return v;
     return nullptr;
 }
+
+template<class T>
+Edge<T> *Graph<T>::findEdge(std::string orig, std::string dest) const {
+    for (auto v : vertexSet) {
+        if (v->getLocation() == orig) {
+            for (auto e : v->getAdj()) {
+                if (e->getDest()->getLocation() == dest) {
+                    return e;
+                }
+            }
+        }
+    }
+    return nullptr;
+}
+
 
 /*
  * Finds the index of the vertex with a given content.

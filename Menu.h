@@ -7,6 +7,8 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <regex>
+
 #include "dijkstra.h"
 
 using namespace std;
@@ -50,7 +52,7 @@ void Menu<T>::fastestIndependantRoute() {
         if (sourceVertex != nullptr) {
             validSource = true;
         } else {
-            std::cout << "Invalid source vertex. Please try again: ";
+            std::cout << "\nInvalid source vertex. Please try again: ";
         }
     }
 
@@ -61,7 +63,7 @@ void Menu<T>::fastestIndependantRoute() {
         if (targetVertex != nullptr) {
             validTarget = true;
         } else {
-            std::cout << "Invalid target vertex. Please try again: ";
+            std::cout << "\nInvalid target vertex. Please try again: ";
         }
     }
 
@@ -73,7 +75,6 @@ void Menu<T>::fastestIndependantRoute() {
 
 template <class T>
 void Menu<T>::fastestRestrictedRoute() {
-    // change findVertex to work with strings
     std::vector<Vertex<T>*> nodesToAvoid = {};
     std::vector<Edge<T>*> segmentsToAvoid = {};
     string source, target, includeNode;
@@ -86,7 +87,7 @@ void Menu<T>::fastestRestrictedRoute() {
         if (sourceVertex != nullptr) {
             validSource = true;
         } else {
-            std::cout << "Invalid source vertex. Please try again: ";
+            std::cout << "\nInvalid source vertex. Please try again: ";
         }
     }
 
@@ -97,15 +98,19 @@ void Menu<T>::fastestRestrictedRoute() {
         if (targetVertex != nullptr) {
             validTarget = true;
         } else {
-            std::cout << "Invalid target vertex. Please try again: ";
+            std::cout << "\nInvalid target vertex. Please try again: ";
         }
     }
 
     while (!validAvoidNodes) {
         bool invalidNodes = false;
-        std::cout << "Please enter the nodes to avoid (separated by commas, leave blank for no nodes): ";
+        std::cout << "Please enter the nodes to avoid (separated by commas, type 'none' for no nodes): ";
         std::string nodes;
         std::cin >> nodes;
+        if (nodes == "none") {
+            validAvoidNodes = true;
+            break;
+        }
         std::stringstream ss(nodes);
         std::string node;
         while (std::getline(ss, node, ',')) {
@@ -113,7 +118,7 @@ void Menu<T>::fastestRestrictedRoute() {
             if (vertex != nullptr) {
                 nodesToAvoid.push_back(vertex);
             } else {
-                std::cout << "Invalid node " << node << ". Please try again: ";
+                std::cout << "\nInvalid node " << node << ". Please try again: ";
                 nodesToAvoid.clear();
                 invalidNodes = true;
                 break;
@@ -122,22 +127,44 @@ void Menu<T>::fastestRestrictedRoute() {
         if (!invalidNodes) validAvoidNodes = true;
     }
 
-    /*
-    TODO: FIX
     while (!validAvoidSegments) {
         bool invalidSegments = false;
-        std::cout << "Please enter the segments to avoid (separated by commas, leave blank for no segments): ";
+        std::cout << "Please enter the segments to avoid (in the format of ('location', 'location'), type 'none' for no segments): ";
         std::string segments;
         std::cin >> segments;
+        if (segments == "none") {
+            validAvoidSegments = true;
+            break;
+        }
         std::stringstream ss(segments);
         std::string segment;
+        std::regex segmentRegex(R"(\(\s*([^,]+)\s*,\s*([^)]+)\s*\))");
+        std::smatch match;
         if (segments.empty()) break;
         while (std::getline(ss, segment, ',')) {
-            Edge<T>* edge = g->findEdge(segment);
-            if (edge != nullptr) {
-                segmentsToAvoid.push_back(edge);
+            if (std::regex_search(segment, match, segmentRegex)) {
+                std::string srcLocation = match[1].str();
+                std::string dstLocation = match[2].str();
+                Vertex<T>* srcVertex = g->findVertex(srcLocation);
+                Vertex<T>* dstVertex = g->findVertex(dstLocation);
+                if (srcVertex != nullptr && dstVertex != nullptr) {
+                    Edge<T>* edge = g->findEdge(srcVertex->getLocation(), dstVertex->getLocation());
+                    if (edge != nullptr) {
+                        segmentsToAvoid.push_back(edge);
+                    } else {
+                        std::cout << "\nInvalid segment " << segment << ". Please try again: ";
+                        segmentsToAvoid.clear();
+                        invalidSegments = true;
+                        break;
+                    }
+                } else {
+                    std::cout << "\nInvalid segment " << segment << ". Please try again: ";
+                    segmentsToAvoid.clear();
+                    invalidSegments = true;
+                    break;
+                }
             } else {
-                std::cout << "Invalid segment " << segment << ". Please try again: ";
+                std::cout << "\nInvalid segment format " << segment << ". Please try again: ";
                 segmentsToAvoid.clear();
                 invalidSegments = true;
                 break;
@@ -145,17 +172,16 @@ void Menu<T>::fastestRestrictedRoute() {
         }
         if (!invalidSegments) validAvoidSegments = true;
     }
-    */
 
     while (!validIncludeNode) {
-        std::cout << "Please enter the node to include (leave blank for no include node): ";
+        std::cout << "Please enter the node to include (type 'none' for no include node): ";
         std::cin >> includeNode;
-        if (includeNode.empty()) break;
+        if (includeNode == "none") break;
         Vertex<T>* includeVertex = g->findVertex(includeNode);
         if (includeVertex != nullptr) {
             validIncludeNode = true;
         } else {
-            std::cout << "Invalid node " << includeNode << ". Please try again: ";
+            std::cout << "\nInvalid node " << includeNode << ". Please try again: ";
         }
     }
 
@@ -217,17 +243,52 @@ void Menu<T>::printFastestIndependantRoute(Vertex<T>* source, Vertex<T>* target)
 template <class T>
 void Menu<T>::printFastestRestrictedRoute(Vertex<T>* source, Vertex<T>* target, std::vector<Vertex<T>*> nodesToAvoid,
     std::vector<Edge<T>*> segmentsToAvoid) {
-    // Implement the logic to find and print the fastest restricted route
-    // This is a placeholder implementation
-    std::cout << "Fastest Restricted Route from " << source << " to " << target << std::endl;
+
+    dijkstra(g, source->getLocation(), nodesToAvoid, segmentsToAvoid);
+
+    std::pair<std::vector<string>, int> res = getPath(g, source->getLocation(), target->getLocation());
+
+    std::cout << "Fastest Restricted Route from " << source->getLocation() << " to " << target->getLocation() << std::endl;
+
+    for (size_t i = 0; i < res.first.size(); ++i) {
+        std::cout << res.first[i];
+        if (i != res.first.size() - 1) {
+            std::cout << " -> ";
+        }
+    }
+
+    std::cout << "\nTotal distance: " << res.second << std::endl;
 }
 
 template <class T>
 void Menu<T>::printFastestRestrictedRoute(Vertex<T>* source, Vertex<T>* target, std::vector<Vertex<T>*> nodesToAvoid,
     std::vector<Edge<T>*> segmentsToAvoid, Vertex<T>* includeNode) {
-    // Implement the logic to find and print the fastest restricted route
-    // This is a placeholder implementation
-    std::cout << "Fastest Restricted Route from " << source << " to " << target << std::endl;
+    int totaldist = 0;
+
+    dijkstra(g, source->getLocation(), nodesToAvoid, segmentsToAvoid);
+
+    std::pair<std::vector<string>, int> res = getPath(g, source->getLocation(), includeNode->getLocation());
+    totaldist += res.second;
+
+    dijkstra(g, includeNode->getLocation(), nodesToAvoid, segmentsToAvoid);
+
+    std::pair<std::vector<string>, int> secondPath = getPath(g, includeNode->getLocation(), target->getLocation());
+    totaldist += secondPath.second;
+
+    for (size_t i = 1; i < secondPath.first.size(); ++i) {
+        res.first.push_back(secondPath.first[i]);
+    }
+
+    std::cout << "Fastest Restricted Route from " << source->getLocation() << " to " << includeNode->getLocation() << std::endl;
+
+    for (size_t i = 0; i < res.first.size(); ++i) {
+        std::cout << res.first[i];
+        if (i != res.first.size() - 1) {
+            std::cout << " -> ";
+        }
+    }
+
+    std::cout << "\nTotal distance: " << totaldist << std::endl;
 }
 
 template <class T>
