@@ -177,27 +177,41 @@ void Menu<T>::printFastestIndependantRoute(Vertex<T>* source, Vertex<T>* target)
 
     dijkstra(g, source->getLocation(), {}, {});
 
-    std::vector<string> path = getPath(g, source->getLocation(), target->getLocation());
+    std::pair<std::vector<string>, int> res = getPath(g, source->getLocation(), target->getLocation());
 
-    for (int i = 1; i < path.size() - 1; i++) {
-        avoidNodes.push_back(g->findVertex(path[i]));
+    for (int i = 1; i < res.first.size() - 1; i++) {
+        avoidNodes.push_back(g->findVertex(res.first[i]));
     }
 
-    std::cout << "Fastest Independent Route from " << source << " to " << target << std::endl;
+    std::cout << "Fastest Independent Route from " << source->getLocation() << " to " << target->getLocation() << std::endl;
 
-    for (const string& location : path) {
-        std::cout << location << "->";
+    for (size_t i = 0; i < res.first.size(); ++i) {
+        std::cout << res.first[i];
+        if (i != res.first.size() - 1) {
+            std::cout << " -> ";
+        }
+    }
+
+    std::cout << "\nTotal distance: " << res.second << std::endl << std::endl;
+
+    for (int i = 1; i < res.first.size() - 1; i++) {
+        avoidNodes.push_back(g->findVertex(res.first[i]));
     }
 
     dijkstra(g, source->getLocation(), avoidNodes, {});
 
-    std::vector<string> path2 = getPath(g, source->getLocation(), target->getLocation());
+    std::pair<std::vector<string>, int> res2 = getPath(g, source->getLocation(), target->getLocation());
 
-    std::cout << "Fastest Alternative Independent Route from " << source << " to " << target << std::endl;
+    std::cout << "Fastest Alternative Independent Route from " << source->getLocation() << " to " << target->getLocation() << std::endl;
 
-    for (const string& location : path2) {
-        std::cout << location << "->";
+    for (size_t i = 0; i < res2.first.size(); ++i) {
+        std::cout << res2.first[i];
+        if (i != res2.first.size() - 1) {
+            std::cout << " -> ";
+        }
     }
+
+    std::cout << "\nTotal distance: " << res2.second << std::endl;
 }
 
 template <class T>
