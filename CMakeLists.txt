@@ -16,8 +16,6 @@ include_directories(${CMAKE_SOURCE_DIR}/data_structures)
 set(SOURCES
         main.cpp
         Parser.cpp
-        #Menu.cpp
-        #dijkstra.cpp
 )
 
 # Define the executable target

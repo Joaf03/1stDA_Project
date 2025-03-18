@@ -1,11 +1,13 @@
 #include "./data_structures/Graph.h"
 #include "Parser.h"
+#include "Menu.h"
 #include <iostream>
 
 
 int main() {
     // Create a Graph object
     Graph<int> graph;
+    Menu<int> menu(&graph);
 
     // Parse the Locations.csv file
     Parser::parseLocations("../data/Locations.csv", graph);
@@ -32,6 +34,8 @@ int main() {
              << ", Walking Time: " << edge->getWalkingTime()
              << endl;
     }
+
+    menu.printInitialMenu();
 
     return 0;
 }
