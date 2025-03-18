@@ -8,14 +8,16 @@ set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE_TMP})
 
 # Add the include directories
 include_directories(${CMAKE_SOURCE_DIR})
+include_directories(${CMAKE_SOURCE_DIR}/data)
+include_directories(${CMAKE_SOURCE_DIR}/data_structures)
+
 
 # Define the source files
 set(SOURCES
         main.cpp
-        Menu.h
-        Menu.cpp
-        dijkstra.cpp
-        dijkstra.h
+        Parser.cpp
+        #Menu.cpp
+        #dijkstra.cpp
 )
 
 # Define the executable target
