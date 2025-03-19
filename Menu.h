@@ -45,9 +45,11 @@ void Menu<T>::fastestIndependantRoute() {
     string source, target;
     bool validSource = false, validTarget = false;
 
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
     while (!validSource) {
         std::cout << "Please enter the source vertex: ";
-        std::cin >> source;
+        std::getline(std::cin, source);
         Vertex<T>* sourceVertex = g->findVertex(source);
         if (sourceVertex != nullptr) {
             validSource = true;
@@ -58,7 +60,7 @@ void Menu<T>::fastestIndependantRoute() {
 
     while (!validTarget) {
         std::cout << "Please enter the target vertex: ";
-        std::cin >> target;
+        std::getline(std::cin, target);
         Vertex<T>* targetVertex = g->findVertex(target);
         if (targetVertex != nullptr) {
             validTarget = true;
@@ -80,9 +82,11 @@ void Menu<T>::fastestRestrictedRoute() {
     string source, target, includeNode;
     bool validSource = false, validTarget = false, validAvoidNodes = false, validAvoidSegments = false, validIncludeNode = false;
 
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
     while (!validSource) {
         std::cout << "Please enter the source vertex: ";
-        std::cin >> source;
+        std::getline(std::cin, source);
         Vertex<T>* sourceVertex = g->findVertex(source);
         if (sourceVertex != nullptr) {
             validSource = true;
@@ -93,7 +97,7 @@ void Menu<T>::fastestRestrictedRoute() {
 
     while (!validTarget) {
         std::cout << "Please enter the target vertex: ";
-        std::cin >> target;
+        std::getline(std::cin, target);
         Vertex<T>* targetVertex = g->findVertex(target);
         if (targetVertex != nullptr) {
             validTarget = true;
@@ -106,7 +110,7 @@ void Menu<T>::fastestRestrictedRoute() {
         bool invalidNodes = false;
         std::cout << "Please enter the nodes to avoid (separated by commas, type 'none' for no nodes): ";
         std::string nodes;
-        std::cin >> nodes;
+        std::getline(std::cin, nodes);
         if (nodes == "none") {
             validAvoidNodes = true;
             break;
@@ -131,7 +135,7 @@ void Menu<T>::fastestRestrictedRoute() {
         bool invalidSegments = false;
         std::cout << "Please enter the segments to avoid (in the format of ('location', 'location'), type 'none' for no segments): ";
         std::string segments;
-        std::cin >> segments;
+        std::getline(std::cin, segments);
         if (segments == "none") {
             validAvoidSegments = true;
             break;
@@ -141,7 +145,13 @@ void Menu<T>::fastestRestrictedRoute() {
         std::regex segmentRegex(R"(\(\s*([^,]+)\s*,\s*([^)]+)\s*\))");
         std::smatch match;
         if (segments.empty()) break;
-        while (std::getline(ss, segment, ',')) {
+        while (std::getline(ss, segment, ')')) {
+            if (segment.front() == '(') {
+                segment = segment.substr(1);
+            }
+            if (segment.back() == ',') {
+                segment.pop_back();
+            }
             if (std::regex_search(segment, match, segmentRegex)) {
                 std::string srcLocation = match[1].str();
                 std::string dstLocation = match[2].str();
@@ -175,7 +185,7 @@ void Menu<T>::fastestRestrictedRoute() {
 
     while (!validIncludeNode) {
         std::cout << "Please enter the node to include (type 'none' for no include node): ";
-        std::cin >> includeNode;
+        std::getline(std::cin, includeNode);
         if (includeNode == "none") break;
         Vertex<T>* includeVertex = g->findVertex(includeNode);
         if (includeVertex != nullptr) {
