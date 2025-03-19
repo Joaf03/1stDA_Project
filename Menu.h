@@ -142,8 +142,6 @@ void Menu<T>::fastestRestrictedRoute() {
         }
         std::stringstream ss(segments);
         std::string segment;
-        std::regex segmentRegex(R"(\(\s*([^,]+)\s*,\s*([^)]+)\s*\))");
-        std::smatch match;
         if (segments.empty()) break;
         while (std::getline(ss, segment, ')')) {
             if (segment.front() == '(') {
@@ -152,36 +150,32 @@ void Menu<T>::fastestRestrictedRoute() {
             if (segment.back() == ',') {
                 segment.pop_back();
             }
-            if (std::regex_search(segment, match, segmentRegex)) {
-                std::string srcLocation = match[1].str();
-                std::string dstLocation = match[2].str();
-                Vertex<T>* srcVertex = g->findVertex(srcLocation);
-                Vertex<T>* dstVertex = g->findVertex(dstLocation);
+            std::string srcLocation = segment.substr(0, segment.find(','));
+            std::string dstLocation = segment.substr(segment.find(',') + 1);
+            Vertex<T>* srcVertex = g->findVertex(srcLocation);
+            Vertex<T>* dstVertex = g->findVertex(dstLocation);
                 if (srcVertex != nullptr && dstVertex != nullptr) {
                     Edge<T>* edge = g->findEdge(srcVertex->getLocation(), dstVertex->getLocation());
                     if (edge != nullptr) {
                         segmentsToAvoid.push_back(edge);
                     } else {
                         std::cout << "\nInvalid segment " << segment << ". Please try again: ";
+                        std::cout << std::endl;
                         segmentsToAvoid.clear();
                         invalidSegments = true;
                         break;
                     }
                 } else {
                     std::cout << "\nInvalid segment " << segment << ". Please try again: ";
+                    std::cout << std::endl;
                     segmentsToAvoid.clear();
                     invalidSegments = true;
                     break;
                 }
-            } else {
-                std::cout << "\nInvalid segment format " << segment << ". Please try again: ";
-                segmentsToAvoid.clear();
-                invalidSegments = true;
-                break;
             }
-        }
         if (!invalidSegments) validAvoidSegments = true;
-    }
+        }
+
 
     while (!validIncludeNode) {
         std::cout << "Please enter the node to include (type 'none' for no include node): ";
