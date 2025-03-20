@@ -1,8 +1,8 @@
-# Install script for directory: C:/Users/Outros/4ºAno-2ºSemestre/DA/1stDA_Project
+# Install script for directory: //wsl$/Ubuntu-20.04/root/1st_DAProject/1stDA_Project
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/da2425_p03_student")
+  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/1stDA_Project")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/Outros/4ºAno-2ºSemestre/DA/1stDA_Project/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "//wsl$/Ubuntu-20.04/root/1st_DAProject/1stDA_Project/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

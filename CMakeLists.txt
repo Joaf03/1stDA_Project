@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.26)
+cmake_minimum_required(VERSION 3.24)
 project(1stDA_Project)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -16,7 +16,9 @@ include_directories(${CMAKE_SOURCE_DIR}/data_structures)
 set(SOURCES
         main.cpp
         Parser.cpp
-)
+        Graph.h
+        dijkstra.h
+        Menu.h)
 
 # Define the executable target
 add_executable(1stDA_Project ${SOURCES})

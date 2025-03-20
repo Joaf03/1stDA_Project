@@ -24,6 +24,8 @@ public:
 
     void fastestRestrictedRoute();
 
+    void fastestEnvFriendlyRoute();
+
     void printFastestIndependantRoute(Vertex<T>* source, Vertex<T>* target);
 
     void printFastestRestrictedRoute(Vertex<T>* source, Vertex<T>* target, std::vector<Vertex<T>*> nodesToAvoid,
@@ -31,6 +33,12 @@ public:
 
     void printFastestRestrictedRoute(Vertex<T>* source, Vertex<T>* target, std::vector<Vertex<T>*> nodesToAvoid,
         std::vector<Edge<T>*> segmentsToAvoid, Vertex<T>* includeNode);
+
+    void printFastestEnvFriendlyRoute(Vertex<T>* source, Vertex<T>* target, std::vector<Vertex<T>*> nodesToAvoid,
+                                     std::vector<Edge<T>*> segmentsToAvoid);
+
+    void printFastestEnvFriendlyRoute(Vertex<T>* source, Vertex<T>* target, std::vector<Vertex<T>*> nodesToAvoid,
+                                     std::vector<Edge<T>*> segmentsToAvoid, Vertex<T>* includeNode);
 
     Graph<T>* getGraph() const {
         return g;
@@ -205,7 +213,7 @@ void Menu<T>::printFastestIndependantRoute(Vertex<T>* source, Vertex<T>* target)
 
     std::vector<Vertex<T>*> avoidNodes = {};
 
-    dijkstra(g, source->getLocation(), {}, {});
+    dijkstra(g, source->getLocation(), {}, {}, true);
 
     std::pair<std::vector<string>, int> res = getPath(g, source->getLocation(), target->getLocation());
 
@@ -228,7 +236,7 @@ void Menu<T>::printFastestIndependantRoute(Vertex<T>* source, Vertex<T>* target)
         avoidNodes.push_back(g->findVertex(res.first[i]));
     }
 
-    dijkstra(g, source->getLocation(), avoidNodes, {});
+    dijkstra(g, source->getLocation(), avoidNodes, {}, true);
 
     std::pair<std::vector<string>, int> res2 = getPath(g, source->getLocation(), target->getLocation());
 
@@ -248,7 +256,7 @@ template <class T>
 void Menu<T>::printFastestRestrictedRoute(Vertex<T>* source, Vertex<T>* target, std::vector<Vertex<T>*> nodesToAvoid,
     std::vector<Edge<T>*> segmentsToAvoid) {
 
-    dijkstra(g, source->getLocation(), nodesToAvoid, segmentsToAvoid);
+    dijkstra(g, source->getLocation(), nodesToAvoid, segmentsToAvoid, true);
 
     std::pair<std::vector<string>, int> res = getPath(g, source->getLocation(), target->getLocation());
 
@@ -269,12 +277,12 @@ void Menu<T>::printFastestRestrictedRoute(Vertex<T>* source, Vertex<T>* target, 
     std::vector<Edge<T>*> segmentsToAvoid, Vertex<T>* includeNode) {
     int totaldist = 0;
 
-    dijkstra(g, source->getLocation(), nodesToAvoid, segmentsToAvoid);
+    dijkstra(g, source->getLocation(), nodesToAvoid, segmentsToAvoid, true);
 
     std::pair<std::vector<string>, int> res = getPath(g, source->getLocation(), includeNode->getLocation());
     totaldist += res.second;
 
-    dijkstra(g, includeNode->getLocation(), nodesToAvoid, segmentsToAvoid);
+    dijkstra(g, includeNode->getLocation(), nodesToAvoid, segmentsToAvoid, true);
 
     std::pair<std::vector<string>, int> secondPath = getPath(g, includeNode->getLocation(), target->getLocation());
     totaldist += secondPath.second;
