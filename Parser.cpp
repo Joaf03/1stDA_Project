@@ -49,7 +49,7 @@ void Parser::parseDistances(const string &filename, Graph<int> &graph) {
         Vertex<int> * orig = graph.findVertex(origInt);
 		Vertex<int> * dest = graph.findVertex(destInt);
 
-        int drivingTime = (driving == "X") ? numeric_limits<int>::infinity() : stoi(driving);
+        int drivingTime = (driving == "X") ? 500000 : stoi(driving);
         int walkingTime = stoi(walking);
         graph.addEdge(orig, dest, drivingTime, walkingTime);
     }
