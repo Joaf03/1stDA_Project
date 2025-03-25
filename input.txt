@@ -1,0 +1,6 @@
+Mode:driving
+Source:S
+Destination:T
+MaxWalkTime:2
+AvoidNodes:none
+AvoidSegments:none

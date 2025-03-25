@@ -7,7 +7,8 @@
 int main() {
     // Create a Graph object
     Graph<int> graph;
-    Menu<int> menu(&graph);
+     Menu<int> menu(&graph); //without batch mode
+    // Menu<int> menu(&graph, true); // with batch mode
 
     // Parse the Locations.csv file
     Parser::parseLocations("../data/Locations.csv", graph);
