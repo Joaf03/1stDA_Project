@@ -983,23 +983,29 @@ void Menu<T>::printFastestEnvFriendlyRoute(Vertex<T>* source, Vertex<T>* target,
 
             std::cout << "Total Time: " << std::get<1>(shortestPath) << " minutes\n";
         }
-    } else {
+    }
+    else {
+        std::string message = "No valid route found within the given constraints.";
+        if (driving_paths.empty())
+            message += " No available parking within reach.";
+
+        if (walking_paths.empty())
+            message += " No walking path found to the destination.";
+
+        else message += " All walking times exceed the maximum allowed.";
+
         if (batch_mode) {
             std::ofstream outputFile("../output.txt");
-
             outputFile << "Source:" << origin << "\n";
             outputFile << "Destination:" << destination << "\n";
             outputFile << "DrivingRoute:none\n";
             outputFile << "ParkingNode:none\n";
             outputFile << "WalkingRoute:none\n";
             outputFile << "TotalTime:\n";
-            outputFile << "Message:No valid route found within the given constraints.\n";
-
+            outputFile << "Message:" << message << "\n";
             outputFile.close();
         }
-        else {
-            std::cout << "No valid route found within the given constraints.\n";
-        }
+        else std::cout << message << std::endl;
     }
 }
 

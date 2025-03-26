@@ -7,14 +7,14 @@
 int main() {
     // Create a Graph object
     Graph<int> graph;
-     Menu<int> menu(&graph); //without batch mode
-    // Menu<int> menu(&graph, true); // with batch mode
+    // Menu<int> menu(&graph); //without batch mode
+    Menu<int> menu(&graph, true); // with batch mode
 
     // Parse the Locations.csv file
-    Parser::parseLocations("../data/Locations.csv", graph);
+    Parser::parseLocations("../data/L.csv", graph);
 
     // Parse the Distances.csv file
-    Parser::parseDistances("../data/Distances.csv", graph);
+    Parser::parseDistances("../data/D.csv", graph);
 
     // Display the parsed vertices
     cout << "Vertices:" << endl;
