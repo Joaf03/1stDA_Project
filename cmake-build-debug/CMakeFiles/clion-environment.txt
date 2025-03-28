@@ -1,4 +1,4 @@
-ToolSet: w64 9.0 (local)@C:\Program Files\JetBrains\CLion 2022.2.4\bin\mingw
+ToolSet: 1.0 (local)Ninja: 1.12.1@/snap/clion/332/bin/ninja/linux/x64/ninja
 Options: 
 
 Options:

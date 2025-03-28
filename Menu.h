@@ -55,6 +55,7 @@ protected:
 template <class T>
 void Menu<T>::fastestIndependantRoute() {
     string source, target;
+    int sourceID = -1, targetID = -1;
     bool validSource = false, validTarget = false;
 
     if (batch_mode) {
@@ -70,15 +71,15 @@ void Menu<T>::fastestIndependantRoute() {
             if (std::getline(iss, key, ':') && std::getline(iss, value)) {
                 value.erase(0, value.find_first_not_of(" \t"));
                 if (key == "Source") {
-                    source = value;
+                    sourceID = stoi(value);
                 } else if (key == "Destination") {
-                    target = value;
+                    targetID = stoi(value);
                 }
             }
         }
         inputFile.close();
 
-        if (source.empty() || target.empty()) {
+        if (sourceID == -1 || targetID == -1) {
             std::cerr << "Error: Invalid input format in input.txt\n";
             return;
         }
@@ -108,8 +109,17 @@ void Menu<T>::fastestIndependantRoute() {
             }
         }
     }
-    Vertex<T>* sourceVertex = g->findVertex(source);
-    Vertex<T>* targetVertex = g->findVertex(target);
+
+    Vertex<T>* sourceVertex = nullptr;
+    Vertex<T>* targetVertex = nullptr;
+
+    if (batch_mode) {
+        sourceVertex = g->findVertex(sourceID);
+        targetVertex = g->findVertex(targetID);
+    } else {
+        sourceVertex = g->findVertex(source);
+        targetVertex = g->findVertex(target);
+    }
 
     printFastestIndependantRoute(sourceVertex, targetVertex);
 }
@@ -119,6 +129,7 @@ void Menu<T>::fastestRestrictedRoute() {
     std::vector<Vertex<T>*> nodesToAvoid = {};
     std::vector<Edge<T>*> segmentsToAvoid = {};
     std::string source, target, includeNode;
+    int sourceID = -1, targetID = -1, includeNodeID = -1;
     bool validSource = false, validTarget = false, validAvoidNodes = false, validAvoidSegments = false, validIncludeNode = false;
 
     if (batch_mode) {
@@ -131,16 +142,18 @@ void Menu<T>::fastestRestrictedRoute() {
         std::string line;
         while (std::getline(inFile, line)) {
             std::stringstream ss(line);
-            std::string key;
+            std::string key, value;
             std::getline(ss, key, ':');
 
             if (key == "Source") {
-                std::getline(ss, source);
-                validSource = (g->findVertex(source) != nullptr);
+                std::getline(ss, value);
+                sourceID = std::stoi(value);
+                validSource = (g->findVertex(sourceID) != nullptr);
             }
             else if (key == "Destination") {
-                std::getline(ss, target);
-                validTarget = (g->findVertex(target) != nullptr);
+                std::getline(ss, value);
+                targetID = std::stoi(value);
+                validTarget = (g->findVertex(targetID) != nullptr);
             }
             else if (key == "AvoidNodes") {
                 std::string nodes;
@@ -149,7 +162,7 @@ void Menu<T>::fastestRestrictedRoute() {
                     std::stringstream ns(nodes);
                     std::string node;
                     while (std::getline(ns, node, ',')) {
-                        Vertex<T>* vertex = g->findVertex(node);
+                        Vertex<T>* vertex = g->findVertex(std::stoi(node));
                         if (vertex) {
                             nodesToAvoid.push_back(vertex);
                         } else {
@@ -173,8 +186,8 @@ void Menu<T>::fastestRestrictedRoute() {
                             std::string srcLocation = segment.substr(0, commaPos);
                             std::string dstLocation = segment.substr(commaPos + 1);
 
-                            Vertex<T>* srcVertex = g->findVertex(srcLocation);
-                            Vertex<T>* dstVertex = g->findVertex(dstLocation);
+                            Vertex<T>* srcVertex = g->findVertex(std::stoi(srcLocation));
+                            Vertex<T>* dstVertex = g->findVertex(std::stoi(dstLocation));
                             if (srcVertex && dstVertex) {
                                 Edge<T>* edge = g->findEdge(srcVertex->getLocation(), dstVertex->getLocation());
                                 if (edge) {
@@ -190,7 +203,8 @@ void Menu<T>::fastestRestrictedRoute() {
             else if (key == "IncludeNode") {
                 std::getline(ss, includeNode);
                 if (includeNode != "none") {
-                    validIncludeNode = (g->findVertex(includeNode) != nullptr);
+                    includeNodeID = std::stoi(includeNode);
+                    validIncludeNode = (g->findVertex(includeNodeID) != nullptr);
                 }
             }
         }
@@ -305,11 +319,21 @@ void Menu<T>::fastestRestrictedRoute() {
         }
     }
 
-    Vertex<T>* sourceVertex = g->findVertex(source);
-    Vertex<T>* targetVertex = g->findVertex(target);
+    Vertex<T>* sourceVertex = nullptr;
+    Vertex<T>* targetVertex = nullptr;
+    Vertex<T>* includeVertex = nullptr;
+
+    if (batch_mode) {
+        sourceVertex = g->findVertex(sourceID);
+        targetVertex = g->findVertex(targetID);
+        if (validIncludeNode) includeVertex = g->findVertex(includeNodeID);
+    } else {
+        sourceVertex = g->findVertex(source);
+        targetVertex = g->findVertex(target);
+        if (validIncludeNode) includeVertex = g->findVertex(includeNode);
+    }
 
     if (validIncludeNode) {
-        Vertex<T>* includeVertex = g->findVertex(includeNode);
         printFastestRestrictedRoute(sourceVertex, targetVertex, nodesToAvoid, segmentsToAvoid, includeVertex);
     } else {
         printFastestRestrictedRoute(sourceVertex, targetVertex, nodesToAvoid, segmentsToAvoid);
@@ -320,6 +344,7 @@ template <class T>
 void Menu<T>::fastestEnvFriendlyRoute() {
     std::vector<Vertex<T>*> nodesToAvoid = {};
     std::vector<Edge<T>*> segmentsToAvoid = {};
+    int sourceID = -1, targetID = -1;
     string source, target;
     int maxWalkingTime;
     bool validSource = false, validTarget = false, validAvoidNodes = false, validAvoidSegments = false, validMaxWalkingTime = false;
@@ -335,8 +360,10 @@ void Menu<T>::fastestEnvFriendlyRoute() {
             while (std::getline(inFile, line)) {
                 if (line.rfind("Source:", 0) == 0) {
                     source = line.substr(7);
+                    sourceID = std::stoi(source);
                 } else if (line.rfind("Destination:", 0) == 0) {
                     target = line.substr(12);
+                    targetID = std::stoi(target);
                 } else if (line.rfind("MaxWalkTime:", 0) == 0) {
                     maxWalkingTime = std::stoi(line.substr(12));
                 } else if (line.rfind("AvoidNodes:", 0) == 0) {
@@ -344,7 +371,7 @@ void Menu<T>::fastestEnvFriendlyRoute() {
                     std::stringstream ss(nodes);
                     std::string node;
                     while (std::getline(ss, node, ',')) {
-                        Vertex<T>* vertex = g->findVertex(node);
+                        Vertex<T>* vertex = g->findVertex(std::stoi(node));
                         if (vertex) {
                             nodesToAvoid.push_back(vertex);
                         }
@@ -359,8 +386,8 @@ void Menu<T>::fastestEnvFriendlyRoute() {
 
                         std::string src = segment.substr(0, segment.find(','));
                         std::string dst = segment.substr(segment.find(',') + 1);
-                        Vertex<T>* srcVertex = g->findVertex(src);
-                        Vertex<T>* dstVertex = g->findVertex(dst);
+                        Vertex<T>* srcVertex = g->findVertex(std::stoi(src));
+                        Vertex<T>* dstVertex = g->findVertex(std::stoi(dst));
 
                         if (srcVertex && dstVertex) {
                             Edge<T>* edge = g->findEdge(srcVertex->getLocation(), dstVertex->getLocation());
@@ -502,8 +529,18 @@ void Menu<T>::fastestEnvFriendlyRoute() {
             }
         }
     }
-    Vertex<T>* sourceVertex = g->findVertex(source);
-    Vertex<T>* targetVertex = g->findVertex(target);
+
+
+    Vertex<T>* sourceVertex = nullptr;
+    Vertex<T>* targetVertex = nullptr;
+
+    if (batch_mode) {
+        sourceVertex = g->findVertex(sourceID);
+        targetVertex = g->findVertex(targetID);
+    } else {
+        sourceVertex = g->findVertex(source);
+        targetVertex = g->findVertex(target);
+    }
 
     printFastestEnvFriendlyRoute(sourceVertex, targetVertex, nodesToAvoid, segmentsToAvoid, maxWalkingTime);
 }
@@ -514,6 +551,7 @@ void Menu<T>::alternativeEnvFriendlyRouts() {
     std::vector<Vertex<T>*> nodesToAvoid = {};
     std::vector<Edge<T>*> segmentsToAvoid = {};
     string source, target;
+    int sourceID = -1, targetID = -1;
     int maxWalkingTime;
     bool validSource = false, validTarget = false, validAvoidNodes = false, validAvoidSegments = false, validMaxWalkingTime = false;
 
@@ -528,8 +566,10 @@ void Menu<T>::alternativeEnvFriendlyRouts() {
             while (std::getline(inFile, line)) {
                 if (line.rfind("Source:", 0) == 0) {
                     source = line.substr(7);
+                    sourceID = std::stoi(source);
                 } else if (line.rfind("Destination:", 0) == 0) {
                     target = line.substr(12);
+                    targetID = std::stoi(target);
                 } else if (line.rfind("MaxWalkTime:", 0) == 0) {
                     maxWalkingTime = std::stoi(line.substr(12));
                 } else if (line.rfind("AvoidNodes:", 0) == 0) {
@@ -537,7 +577,7 @@ void Menu<T>::alternativeEnvFriendlyRouts() {
                     std::stringstream ss(nodes);
                     std::string node;
                     while (std::getline(ss, node, ',')) {
-                        Vertex<T>* vertex = g->findVertex(node);
+                        Vertex<T>* vertex = g->findVertex(std::stoi(node));
                         if (vertex) {
                             nodesToAvoid.push_back(vertex);
                         }
@@ -552,8 +592,8 @@ void Menu<T>::alternativeEnvFriendlyRouts() {
 
                         std::string src = segment.substr(0, segment.find(','));
                         std::string dst = segment.substr(segment.find(',') + 1);
-                        Vertex<T>* srcVertex = g->findVertex(src);
-                        Vertex<T>* dstVertex = g->findVertex(dst);
+                        Vertex<T>* srcVertex = g->findVertex(std::stoi(src));
+                        Vertex<T>* dstVertex = g->findVertex(std::stoi(dst));
 
                         if (srcVertex && dstVertex) {
                             Edge<T>* edge = g->findEdge(srcVertex->getLocation(), dstVertex->getLocation());
@@ -695,8 +735,17 @@ void Menu<T>::alternativeEnvFriendlyRouts() {
             }
         }
     }
-    Vertex<T>* sourceVertex = g->findVertex(source);
-    Vertex<T>* targetVertex = g->findVertex(target);
+
+    Vertex<T>* sourceVertex = nullptr;
+    Vertex<T>* targetVertex = nullptr;
+
+    if (batch_mode) {
+        sourceVertex = g->findVertex(sourceID);
+        targetVertex = g->findVertex(targetID);
+    } else {
+        sourceVertex = g->findVertex(source);
+        targetVertex = g->findVertex(target);
+    }
 
     printAlternativeEnvFriendlyRoutes(sourceVertex, targetVertex, nodesToAvoid, segmentsToAvoid, maxWalkingTime);
 }
@@ -737,6 +786,7 @@ void Menu<T>::printFastestIndependantRoute(Vertex<T>* source, Vertex<T>* target)
             if (i != res2.first.size() - 1) outFile << ",";
         }
         outFile << "(" << res2.second << ")\n";
+        std::cout << "Successfully written result to output.txt" << std::endl;
 
         outFile.close();
     } else {
@@ -788,6 +838,8 @@ void Menu<T>::printFastestRestrictedRoute(Vertex<T>* source, Vertex<T>* target, 
         }
 
         outFile << "(" << res.second << ")\n";
+
+        std::cout << "Successfully written result to output.txt" << std::endl;
         outFile.close();
 
     }
@@ -842,6 +894,8 @@ void Menu<T>::printFastestRestrictedRoute(Vertex<T>* source, Vertex<T>* target, 
         }
 
         outFile << "(" << totaldist << ")\n";
+
+        std::cout << "Successfully written result to output.txt" << std::endl;
         outFile.close();
 
     } else {
@@ -1003,6 +1057,8 @@ void Menu<T>::printFastestEnvFriendlyRoute(Vertex<T>* source, Vertex<T>* target,
             outputFile << "WalkingRoute:none\n";
             outputFile << "TotalTime:\n";
             outputFile << "Message:" << message << "\n";
+
+            std::cout << "Successfully written result to output.txt" << std::endl;
             outputFile.close();
         }
         else std::cout << message << std::endl;
@@ -1088,6 +1144,8 @@ void Menu<T>::printAlternativeEnvFriendlyRoutes(Vertex<T>* source, Vertex<T>* ta
 
                 outputFile << "TotalTime" << i + 1 << ":" << std::get<1>(bestPath) << "\n";
             }
+
+            std::cout << "Successfully written result to output.txt" << std::endl;
             outputFile.close();
         }
 

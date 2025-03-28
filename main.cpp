@@ -7,14 +7,32 @@
 int main() {
     // Create a Graph object
     Graph<int> graph;
+    bool batch;
+
+    while (true) {
+        std::cout << "Turn on batch mode functionality? (y/n): ";
+        string batchMode;
+        std::cin >> batchMode;
+
+        if (batchMode == "y" || batchMode == "Y") {
+            batch = true;
+            break;
+        } else if (batchMode == "n" || batchMode == "N") {
+            batch = false;
+            break;
+        } else {
+            std::cout << "Invalid input. Please try again.\n";
+        }
+    }
+
     // Menu<int> menu(&graph); //without batch mode
-    Menu<int> menu(&graph, true); // with batch mode
+    Menu<int> menu(&graph, batch); // with batch mode
 
     // Parse the Locations.csv file
-    Parser::parseLocations("../data/L.csv", graph);
+    Parser::parseLocations("../data/Locations.csv", graph);
 
     // Parse the Distances.csv file
-    Parser::parseDistances("../data/D.csv", graph);
+    Parser::parseDistances("../data/Distances.csv", graph);
 
     // Display the parsed vertices
     cout << "Vertices:" << endl;
