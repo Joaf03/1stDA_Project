@@ -10,6 +10,20 @@
 
 #include "Parser.h"
 
+/**
+ * @file Parser.cpp
+ * @brief Implementation file for the Parser class.
+ *
+ * This file contains the implementation of the Parser class methods for parsing location and distance data from CSV files.
+ */
+
+
+/**
+ * @brief Parses location data from a CSV file and adds vertices to the graph.
+ *
+ * @param filename The name of the CSV file containing location data.
+ * @param graph The graph object to which the vertices will be added.
+ */
 void Parser::parseLocations(const string &filename, Graph<int> &graph) {
     cout << "Parsing locations from " << filename << endl;
     ifstream file(filename);
@@ -30,7 +44,12 @@ void Parser::parseLocations(const string &filename, Graph<int> &graph) {
     }
 }
 
-
+/**
+* @brief Parses distance data from a CSV file and adds edges to the graph.
+*
+* @param filename The name of the CSV file containing distance data.
+* @param graph The graph object to which the edges will be added.
+*/
 void Parser::parseDistances(const string &filename, Graph<int> &graph) {
     ifstream file(filename);
     string line;

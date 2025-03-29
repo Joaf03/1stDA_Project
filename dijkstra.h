@@ -2,6 +2,13 @@
 // Created by curlmike on 14-03-2025.
 //
 
+/**
+ * @file dijkstra.h
+ * @brief Header file for Dijkstra's algorithm implementation.
+ *
+ * This file contains the implementation of Dijkstra's algorithm for finding the shortest paths in a graph.
+ */
+
 #ifndef DIJKSTRA_H
 #define DIJKSTRA_H
 #include "./data_structures/Graph.h"
@@ -10,6 +17,17 @@
 #include <algorithm>
 
 using namespace std;
+
+/**
+ * @brief Relaxes an edge during the Dijkstra's algorithm.
+ *
+ * @tparam T The type of the vertex information.
+ * @param edge Pointer to the edge to be relaxed.
+ * @param isDriving Flag to indicate if the driving time should be used.
+ * @return True if the edge was relaxed, false otherwise.
+ *
+ * @complexity O(1)
+ */
 
 template <class T>
 bool relaxEdge(Edge<T> *edge, bool isDriving) { // d[u] + w(u,v) < d[v]
@@ -35,6 +53,19 @@ bool relaxEdge(Edge<T> *edge, bool isDriving) { // d[u] + w(u,v) < d[v]
 
     return false;
 }
+
+/**
+ * @brief Runs Dijkstra's algorithm on the graph.
+ *
+ * @tparam T The type of the vertex information.
+ * @param g Pointer to the graph object.
+ * @param origin The starting vertex location.
+ * @param nodesToAvoid Vector of nodes to avoid.
+ * @param segmentsToAvoid Vector of segments to avoid.
+ * @param isDriving Flag to indicate if the driving time should be used.
+ *
+ * @complexity O((V + E) \log V), where V is the number of vertices and E is the number of edges.
+ */
 
 template <class T>
 void dijkstra(Graph<T> *g, const string &origin, std::vector<Vertex<T>*> nodesToAvoid, std::vector<Edge<T>*> segmentsToAvoid, bool isDriving) {
@@ -70,6 +101,18 @@ void dijkstra(Graph<T> *g, const string &origin, std::vector<Vertex<T>*> nodesTo
     }
 }
 
+
+/**
+ * @brief Retrieves the path from the origin to the destination.
+ *
+ * @tparam T The type of the vertex information.
+ * @param g Pointer to the graph object.
+ * @param origin The starting vertex location.
+ * @param dest The destination vertex location.
+ * @return A pair containing the path as a vector of strings and the total distance.
+ *
+ * @complexity O(V), where V is the number of vertices in the path.
+ */
 template <class T>
 std::pair<std::vector<std::string>, int> getPath(Graph<T> * g, const string &origin, const string &dest) {
     std::pair<std::vector<string>, int> res;

@@ -2,6 +2,13 @@
 // Created by curlmike on 08-03-2025.
 //
 
+/**
+ * @file Menu.h
+ * @brief Header file for the Menu class.
+ *
+ * This file contains the declaration of the Menu class and its member functions.
+ */
+
 #ifndef MENU_H
 #define MENU_H
 #include <iostream>
@@ -14,42 +21,112 @@
 
 using namespace std;
 
+
+/**
+ * @class Menu
+ * @brief A class to represent the menu for the graph operations.
+ *
+ * This class provides various functions to interact with the graph and perform different types of route calculations.
+ *
+ * @tparam T The type of the vertex information.
+ */
+
 template <class T>
 class Menu {
 public:
+    /**
+     * @brief Constructor for the Menu class.
+     * @param g Pointer to the graph object.
+     * @param batch_mode Flag to indicate if the menu is in batch mode.
+     */
     explicit Menu(Graph<T>* g, bool batch_mode = false) : g(g), batch_mode(batch_mode) {}
 
+    /**
+     * @brief Prints the initial menu options.
+     */
     void printInitialMenu();
 
+    /**
+     * @brief Finds the fastest independent route.
+     */
     void fastestIndependantRoute();
 
+    /**
+     * @brief Finds the fastest restricted route.
+     */
     void fastestRestrictedRoute();
 
+    /**
+     * @brief Finds the fastest environmentally friendly route.
+     */
     void fastestEnvFriendlyRoute();
 
+    /**
+     * @brief Finds alternative environmentally friendly routes.
+     */
     void alternativeEnvFriendlyRouts();
 
+    /**
+     * @brief Prints the fastest independent route.
+     * @param source Pointer to the source vertex.
+     * @param target Pointer to the target vertex.
+     */
     void printFastestIndependantRoute(Vertex<T>* source, Vertex<T>* target);
 
+    /**
+     * @brief Prints the fastest restricted route.
+     * @param source Pointer to the source vertex.
+     * @param target Pointer to the target vertex.
+     * @param nodesToAvoid Vector of nodes to avoid.
+     * @param segmentsToAvoid Vector of segments to avoid.
+     */
     void printFastestRestrictedRoute(Vertex<T>* source, Vertex<T>* target, std::vector<Vertex<T>*> nodesToAvoid,
         std::vector<Edge<T>*> segmentsToAvoid);
 
+    /**
+     * @brief Prints the fastest restricted route with an included node.
+     * @param source Pointer to the source vertex.
+     * @param target Pointer to the target vertex.
+     * @param nodesToAvoid Vector of nodes to avoid.
+     * @param segmentsToAvoid Vector of segments to avoid.
+     * @param includeNode Pointer to the node to include.
+     */
     void printFastestRestrictedRoute(Vertex<T>* source, Vertex<T>* target, std::vector<Vertex<T>*> nodesToAvoid,
         std::vector<Edge<T>*> segmentsToAvoid, Vertex<T>* includeNode);
 
+    /**
+     * @brief Prints the fastest environmentally friendly route.
+     * @param source Pointer to the source vertex.
+     * @param target Pointer to the target vertex.
+     * @param nodesToAvoid Vector of nodes to avoid.
+     * @param segmentsToAvoid Vector of segments to avoid.
+     * @param maxWalkingTime Maximum walking time.
+     */
     void printFastestEnvFriendlyRoute(Vertex<T>* source, Vertex<T>* target, std::vector<Vertex<T>*> nodesToAvoid,
                                      std::vector<Edge<T>*> segmentsToAvoid, int maxWalkingTime);
 
+    /**
+     * @brief Prints alternative environmentally friendly routes.
+     * @param source Pointer to the source vertex.
+     * @param target Pointer to the target vertex.
+     * @param nodesToAvoid Vector of nodes to avoid.
+     * @param segmentsToAvoid Vector of segments to avoid.
+     * @param maxWalkingTime Maximum walking time.
+     */
     void printAlternativeEnvFriendlyRoutes(Vertex<T> *source, Vertex<T> *target, vector<Vertex<T> *> nodesToAvoid,
                                            vector<Edge<T> *> segmentsToAvoid, int maxWalkingTime);
 
+    /**
+     * @brief Returns the graph object.
+     * @return Pointer to the graph object.
+     */
     Graph<T>* getGraph() const {
         return g;
     }
 
 protected:
-    Graph<T>* g;
-    bool batch_mode;
+    Graph<T>* g; ///< Pointer to the graph object.
+    bool batch_mode; ///< Flag to indicate if the menu is in batch mode.
 };
 
 template <class T>
