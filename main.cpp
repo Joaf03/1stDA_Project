@@ -1,22 +1,43 @@
-#include "Graph.h"
+#include "./data_structures/Graph.h"
+#include "Parser.h"
+#include "Menu.h"
 #include <iostream>
 
-using namespace std;
 
 int main() {
     // Create a Graph object
     Graph<int> graph;
+    bool batch;
+
+    while (true) {
+        std::cout << "Turn on batch mode functionality? (y/n): ";
+        string batchMode;
+        std::cin >> batchMode;
+
+        if (batchMode == "y" || batchMode == "Y") {
+            batch = true;
+            break;
+        } else if (batchMode == "n" || batchMode == "N") {
+            batch = false;
+            break;
+        } else {
+            std::cout << "Invalid input. Please try again.\n";
+        }
+    }
+
+    // Menu<int> menu(&graph); //without batch mode
+    Menu<int> menu(&graph, batch); // with batch mode
 
     // Parse the Locations.csv file
-    graph.parseLocations("For%20Students/Locations.csv");
+    Parser::parseLocations("../data/Locations.csv", graph);
 
     // Parse the Distances.csv file
-    graph.parseDistances("For%20Students/Distances.csv");
+    Parser::parseDistances("../data/Distances.csv", graph);
 
     // Display the parsed vertices
     cout << "Vertices:" << endl;
-    for (const auto& vertex : graph.getVertices()) {
-        cout << "ID: " << vertex->getID()
+    for (const auto& vertex : graph.getVertexSet()) {
+        cout << "ID: " << vertex->getInfo()
              << ", Code: " << vertex->getCode()
              << ", Location: " << vertex->getLocation()
              << ", Parking: " << (vertex->getParking() ? "Yes" : "No")
@@ -32,6 +53,8 @@ int main() {
              << ", Walking Time: " << edge->getWalkingTime()
              << endl;
     }
+
+    menu.printInitialMenu();
 
     return 0;
 }
